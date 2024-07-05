@@ -89,3 +89,49 @@ test('Test - try to click buttons after unhiding on local site', async ({ page }
 });
 });
 
+export async function recursivelyWaitForElementWithoutErrorTimeout(page: Page, elementId, attempts: number, stringIdOfTest: string, locatorType = 'locator', step = 0, timeout = 1000) {
+    step++;
+    let element: Locator;
+    let elementCount: number;
+    let isElementAttached: boolean;
+    const currentUrl = await page.url();
+    console.log("[TEST]:" + stringIdOfTest)
+    console.log("Checking URL:" + currentUrl);
+    let message = stringIdOfTest + "  Try to make additional pause on page while trying to find element with ID:" + elementId + "; current step №" + step + " attempts left:" + attempts + "; timeout between attempts:" + timeout + "ms; URL:" + currentUrl;
+    await test.step(message, async () => {
+        if (locatorType.indexOf('getByTestId') != -1) {
+            element = await page.getByTestId(elementId);
+        }
+        else if (locatorType.indexOf('getByRole') != -1) {
+            element = await page.getByRole(elementId);
+        }
+        else {
+            element = await page.locator(elementId);
+        }
+        elementCount = await element.count();
+        try{
+            await expect(element).toBeAttached();
+            isElementAttached = true;
+            // console.log("Element attached")
+        }
+        catch (Exception) {
+            isElementAttached = false;
+            // console.log("Element NOT attached")
+        }
+    }, { box: true });
+
+    if (elementCount > 0 && isElementAttached) {
+        console.log("Element with ID:" + elementId + " found on step №" + step + " of:" + attempts + ". Element:");
+        console.log(element);
+        return element;
+    } else {
+        //console.log("Attempt №" + step + " of:" + attempts + " fails!");
+        await page.waitForTimeout(timeout);
+        if (step < attempts) {
+            await recursivelyWaitForElementWithoutErrorTimeout(page, elementId, attempts, stringIdOfTest, locatorType, step, timeout);
+        } else {
+            console.log("Element with ID:" + elementId + " not found!")
+            return null;
+        }
+    }
+}
