@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<style>
+    .main-container {
+        display: flex;
+    }
+    .child-button {        
+        font-size: 2em;
+        margin-right: 5px;
+        padding: 5px;
+    }
+</style>
+<body>
+<h1>Heading for Playwright timeout test</h1>
+<p>All 3 buttons exists from page load, third has "display:none" and property "display" will be changed to "block" after 4 second</p>
+<p>Goal is to emulate low speed of page changes</p>
+<div id="mainContainer" class="main-container" data-testid="div-id-main">
+    <button class="child-button" data-testid="button-id-first" onclick="addInfoFromButton('FIRST')">
+        First button
+    </button>
+    <button class="child-button" data-testid="button-id-second" onclick="addInfoFromButton('SECOND')">
+        Second button
+    </button>
+    <button class="child-button" style="display: none;" data-testid="button-id-third" id="buttonIdThird" onclick="addInfoFromButton('THIRD')">
+        Third button
+    </button>
+</div>
+<p>Below text added:</p>
+<div id="addContainer" class="add-container" data-testid="div-id-add">
+
+</div>
+<script>
+    function addInfoFromButton(text) {
+        console.log('Click')
+        const elToAdd = document.createElement("p");
+        const textnode = document.createTextNode("The " + text + " button was pressed");
+        elToAdd.appendChild(textnode);
+        document.getElementById("addContainer").appendChild(elToAdd);
+    }
+    setTimeout(function(){ 
+        const thirdButton = document.getElementById('buttonIdThird');
+        thirdButton.style.display = "block";
+    }, 4000);    
+</script>
+</body>
+</html> 

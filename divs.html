@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<style>
+    .main-container {
+        display: flex;
+    }
+    .child-div {
+        background-color: red;
+        height: 200px;
+        width: 200px;
+        border: 3px solid gray;
+        font-size: 2em;
+        margin-right: 5px;
+        padding: 5px;
+    }
+</style>
+<body>
+<h1>Heading for Playwright timeout test</h1>
+<h2>Two divs (1, 2) exists from page load, third will be appended after 4 second</h2>
+<p>Goal is to emulate low speed of page rendering</p>
+<div id="mainContainer" class="main-container" data-testid="div-id-main">
+    <div class="child-div" data-testid="div-id-first">
+        I'm first div
+    </div>
+    <div class="child-div" data-testid="div-id-second">
+        I'm second div
+    </div>
+</div>
+<script>
+    setTimeout(function(){ 
+        const thirdDiv = document.createElement("div");
+        thirdDiv.classList.add('child-div');
+        thirdDiv.setAttribute('data-testid', 'div-id-third');
+        const textnode = document.createTextNode("I'm third div");
+        thirdDiv.appendChild(textnode);
+        document.getElementById("mainContainer").appendChild(thirdDiv);
+    }, 4000);    
+</script>
+</body>
+</html> 
