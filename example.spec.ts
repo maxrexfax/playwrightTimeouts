@@ -20,11 +20,10 @@ test('Test - try to find appended div on local site', async ({ page }) => {
   console.log("await secondDiv.count():" + await secondDiv.count());
   expect (await secondDiv.count() > 0).toBeTruthy();
 
-  // await page.waitForSelector('data-testid="div-id-third"', {timeout: 10000});// так не работает
-  //await page.waitForTimeout(5000);//так работает
-  const thirdDiv = await mainDiv.getByTestId('div-id-third');
-  console.log("await thirdDiv.count():" + await thirdDiv.count());
-  expect (await thirdDiv.count() > 0).toBeTruthy();
+ await page.waitForSelector('div[data-testid="div-id-third"]', {timeout: 10000});
+ const thirdDiv = await mainDiv.getByTestId('div-id-third');
+ console.log("await thirdDiv.count():" + await thirdDiv.count());
+ expect (await thirdDiv.count() > 0).toBeTruthy();
   await page.waitForTimeout(3000);
 });
 
